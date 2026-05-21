@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini CV Oluşturucu — Ödev</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; padding: 30px; background: #f5f5f5; }
+
+    h1 { text-align: center; margin-bottom: 10px; }
+    .aciklama { text-align: center; color: #666; margin-bottom: 30px; font-size: 14px; }
+
+    /* ── FORM ALANI ── */
+    #cvFormu {
+      max-width: 500px;
+      margin: 0 auto 40px auto;
+      background: #fff;
+      padding: 25px;
+      border: 1px solid #ddd;
+    }
+
+    #cvFormu label {
+      display: block;
+      margin-top: 12px;
+      margin-bottom: 4px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    #cvFormu input[type="text"],
+    #cvFormu input[type="email"],
+    #cvFormu input[type="tel"],
+    #cvFormu input[type="url"],
+    #cvFormu input[type="color"],
+    #cvFormu textarea,
+    #cvFormu select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    #cvFormu textarea { resize: vertical; min-height: 80px; }
+
+    .renk-grubu { display: flex; gap: 15px; margin-top: 4px; }
+    .renk-grubu label { font-weight: normal; font-size: 13px; margin: 0; }
+    .renk-grubu input[type="color"] { width: 60px; height: 32px; padding: 2px; cursor: pointer; }
+
+    .buton-grubu { margin-top: 20px; display: flex; gap: 10px; }
+    .buton-grubu button {
+      flex: 1;
+      padding: 10px;
+      font-size: 15px;
+      cursor: pointer;
+      border: 1px solid #999;
+    }
+    #gonderBtn { background: #2c3e50; color: #fff; border: none; }
+    #temizleBtn { background: #ecf0f1; }
+
+    /* ── CV ÇIKTI ALANI ── */
+    #cvCikti {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 30px;
+      border: 2px dashed #ccc;
+      min-height: 200px;
+      display: none; /* JavaScript ile gösterilecek */
+    }
+
+    #cvCikti img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid currentColor;
+    }
+
+    #cvCikti h2 { margin: 15px 0 5px 0; }
+    #cvCikti p { margin: 4px 0; }
+    #cvCikti hr { margin: 15px 0; border: none; border-top: 1px solid #ccc; }
+  </style>
+</head>
+<body>
+
+  <h1>📝 Mini CV Oluşturucu</h1>
+  <p class="aciklama">Formu doldurun, "Gönder" butonuna basın ve aşağıda CV'nizi görün.</p>
+
+  <!-- ══════════════════════════════════════════════
+       FORM
+  ══════════════════════════════════════════════ -->
+  <form id="cvFormu">
+
+    <label for="adSoyad">Ad Soyad</label>
+    <input type="text" id="adSoyad" placeholder="Adınız ve soyadınız">
+
+    <label for="email">E-posta</label>
+    <input type="email" id="email" placeholder="ornek@mail.com">
+
+    <label for="telefon">Telefon</label>
+    <input type="tel" id="telefon" placeholder="05XX XXX XX XX">
+
+    <label for="okul">Okul</label>
+    <input type="text" id="okul" placeholder="Üniversite / Lise adı">
+
+    <label for="bolum">Bölüm</label>
+    <input type="text" id="bolum" placeholder="Okuduğunuz bölüm">
+
+    <label for="profilResmi">Profil Resmi (URL)</label>
+    <input type="url" id="profilResmi" placeholder="https://ornek.com/foto.jpg">
+
+    <label for="basarilar">Başarılar</label>
+    <textarea id="basarilar" placeholder="Her satıra bir başarı yazın..."></textarea>
+
+    <label>CV Yazı Rengi</label>
+    <div class="renk-grubu">
+      <div>
+        <label for="yaziRenk">Yazı</label>
+        <input type="color" id="yaziRenk" value="#222222">
+      </div>
+      <div>
+        <label for="arkaplanRenk">Arka Plan</label>
+        <input type="color" id="arkaplanRenk" value="#ffffff">
+      </div>
+    </div>
+
+    <label for="yaziTipi">Yazı Tipi</label>
+    <select id="yaziTipi">
+      <option value="Arial, sans-serif">Arial</option>
+      <option value="Georgia, serif">Georgia</option>
+      <option value="'Courier New', monospace">Courier New</option>
+    </select>
+
+    <div class="buton-grubu">
+      <button type="submit" id="gonderBtn">Gönder</button>
+      <button type="button" id="temizleBtn">Temizle</button>
+    </div>
+  </form>
+
+  <!-- ══════════════════════════════════════════════
+       CV ÇIKTI ALANI — JavaScript ile doldurulacak
+  ══════════════════════════════════════════════ -->
+  <div id="cvCikti"></div>
+
+  <!-- ══════════════════════════════════════════════
+       JAVASCRIPT — ÖĞRENCİ BURAYA YAZACAK
+  ══════════════════════════════════════════════ -->
+  <script>
+    /*
+    ╔══════════════════════════════════════════════════════════════╗
+    ║                         GÖREVLER                           ║
+    ╠══════════════════════════════════════════════════════════════╣
+    ║                                                            ║
+    ║  1. ELEMAN SEÇİMİ                                         ║
+    ║     Formdaki tüm input, textarea, select elemanlarını      ║
+    ║     ve butonları querySelector ile seçin.                  ║
+    ║     #cvCikti alanını da seçin.                             ║
+    ║                                                            ║
+    ║  2. FORM GÖNDERİMİ                                        ║
+    ║     Forma "submit" olayı ekleyin.                          ║
+    ║     e.preventDefault() ile sayfanın yenilenmesini          ║
+    ║     engelleyin.                                            ║
+    ║                                                            ║
+    ║  3. DOĞRULAMA (VALİDATİON)                                ║
+    ║     Ad Soyad, E-posta ve Okul alanlarının boş olup        ║
+    ║     olmadığını kontrol edin. Boşsa alert ile uyarın.       ║
+    ║                                                            ║
+    ║  4. CV OLUŞTURMA                                           ║
+    ║     #cvCikti alanının içine DOM metotlarıyla               ║
+    ║     (createElement, appendChild, textContent vb.)          ║
+    ║     şu elemanları ekleyin:                                 ║
+    ║       - Profil resmi (<img>)                               ║
+    ║       - Ad Soyad (<h2>)                                    ║
+    ║       - E-posta, Telefon, Okul, Bölüm (<p>)               ║
+    ║       - Başarılar listesi (<ul> ve <li>)                   ║
+    ║                                                            ║
+    ║  5. STİL UYGULAMA                                          ║
+    ║     Kullanıcının seçtiği yazı rengi, arka plan rengi       ║
+    ║     ve yazı tipini #cvCikti alanına style ile uygulayın.   ║
+    ║                                                            ║
+    ║  6. GÖRÜNÜRLÜK                                             ║
+    ║     CV oluşturulduktan sonra #cvCikti alanının             ║
+    ║     display özelliğini "block" yaparak görünür hale        ║
+    ║     getirin.                                               ║
+    ║                                                            ║
+    ║  7. TEMİZLE BUTONU                                         ║
+    ║     "Temizle" butonuna tıklanınca formu sıfırlayın        ║
+    ║     ve CV çıktı alanını gizleyin.                          ║
+    ║                                                            ║
+    ║  İPUCU: Başarılar alanındaki her satırı ayrı bir <li>      ║
+    ║  olarak eklemek için .split("\n") kullanabilirsiniz.        ║
+    ║                                                            ║
+    ╚══════════════════════════════════════════════════════════════╝
+    */
+
+    // Kodunuzu buraya yazın...
+
+  </script>
+</body>
+</html>

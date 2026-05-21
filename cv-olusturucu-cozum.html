@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini CV Oluşturucu — Çözüm</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; padding: 30px; background: #f5f5f5; }
+
+    h1 { text-align: center; margin-bottom: 10px; }
+    .aciklama { text-align: center; color: #666; margin-bottom: 30px; font-size: 14px; }
+
+    /* ── FORM ALANI ── */
+    #cvFormu {
+      max-width: 500px;
+      margin: 0 auto 40px auto;
+      background: #fff;
+      padding: 25px;
+      border: 1px solid #ddd;
+    }
+
+    #cvFormu label {
+      display: block;
+      margin-top: 12px;
+      margin-bottom: 4px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    #cvFormu input[type="text"],
+    #cvFormu input[type="email"],
+    #cvFormu input[type="tel"],
+    #cvFormu input[type="url"],
+    #cvFormu input[type="color"],
+    #cvFormu textarea,
+    #cvFormu select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    #cvFormu textarea { resize: vertical; min-height: 80px; }
+
+    .renk-grubu { display: flex; gap: 15px; margin-top: 4px; }
+    .renk-grubu label { font-weight: normal; font-size: 13px; margin: 0; }
+    .renk-grubu input[type="color"] { width: 60px; height: 32px; padding: 2px; cursor: pointer; }
+
+    .buton-grubu { margin-top: 20px; display: flex; gap: 10px; }
+    .buton-grubu button {
+      flex: 1;
+      padding: 10px;
+      font-size: 15px;
+      cursor: pointer;
+      border: 1px solid #999;
+    }
+    #gonderBtn { background: #2c3e50; color: #fff; border: none; }
+    #temizleBtn { background: #ecf0f1; }
+
+    /* ── CV ÇIKTI ALANI ── */
+    #cvCikti {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 30px;
+      border: 2px dashed #ccc;
+      min-height: 200px;
+      display: none;
+    }
+
+    #cvCikti img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid currentColor;
+    }
+
+    #cvCikti h2 { margin: 15px 0 5px 0; }
+    #cvCikti p { margin: 4px 0; }
+    #cvCikti hr { margin: 15px 0; border: none; border-top: 1px solid #ccc; }
+  </style>
+</head>
+<body>
+
+  <h1>📝 Mini CV Oluşturucu</h1>
+  <p class="aciklama">Formu doldurun, "Gönder" butonuna basın ve aşağıda CV'nizi görün.</p>
+
+  <!-- ══════════════════════════════════════════════
+       FORM
+  ══════════════════════════════════════════════ -->
+  <form id="cvFormu">
+
+    <label for="adSoyad">Ad Soyad</label>
+    <input type="text" id="adSoyad" placeholder="Adınız ve soyadınız">
+
+    <label for="email">E-posta</label>
+    <input type="email" id="email" placeholder="ornek@mail.com">
+
+    <label for="telefon">Telefon</label>
+    <input type="tel" id="telefon" placeholder="05XX XXX XX XX">
+
+    <label for="okul">Okul</label>
+    <input type="text" id="okul" placeholder="Üniversite / Lise adı">
+
+    <label for="bolum">Bölüm</label>
+    <input type="text" id="bolum" placeholder="Okuduğunuz bölüm">
+
+    <label for="profilResmi">Profil Resmi (URL)</label>
+    <input type="url" id="profilResmi" placeholder="https://ornek.com/foto.jpg">
+
+    <label for="basarilar">Başarılar</label>
+    <textarea id="basarilar" placeholder="Her satıra bir başarı yazın..."></textarea>
+
+    <label>CV Yazı Rengi</label>
+    <div class="renk-grubu">
+      <div>
+        <label for="yaziRenk">Yazı</label>
+        <input type="color" id="yaziRenk" value="#222222">
+      </div>
+      <div>
+        <label for="arkaplanRenk">Arka Plan</label>
+        <input type="color" id="arkaplanRenk" value="#ffffff">
+      </div>
+    </div>
+
+    <label for="yaziTipi">Yazı Tipi</label>
+    <select id="yaziTipi">
+      <option value="Arial, sans-serif">Arial</option>
+      <option value="Georgia, serif">Georgia</option>
+      <option value="'Courier New', monospace">Courier New</option>
+    </select>
+
+    <div class="buton-grubu">
+      <button type="submit" id="gonderBtn">Gönder</button>
+      <button type="button" id="temizleBtn">Temizle</button>
+    </div>
+  </form>
+
+  <!-- ══════════════════════════════════════════════
+       CV ÇIKTI ALANI
+  ══════════════════════════════════════════════ -->
+  <div id="cvCikti"></div>
+
+  <!-- ══════════════════════════════════════════════
+       JAVASCRIPT — ÇÖZÜM
+  ══════════════════════════════════════════════ -->
+  <script>
+
+    // ──────────────────────────────────────────────
+    // 1. ELEMAN SEÇİMİ
+    // ──────────────────────────────────────────────
+    var cvFormu      = document.querySelector("#cvFormu");
+    var adSoyad      = document.querySelector("#adSoyad");
+    var email        = document.querySelector("#email");
+    var telefon      = document.querySelector("#telefon");
+    var okul         = document.querySelector("#okul");
+    var bolum        = document.querySelector("#bolum");
+    var profilResmi  = document.querySelector("#profilResmi");
+    var basarilar    = document.querySelector("#basarilar");
+    var yaziRenk     = document.querySelector("#yaziRenk");
+    var arkaplanRenk = document.querySelector("#arkaplanRenk");
+    var yaziTipi     = document.querySelector("#yaziTipi");
+    var temizleBtn   = document.querySelector("#temizleBtn");
+    var cvCikti      = document.querySelector("#cvCikti");
+
+
+    // ──────────────────────────────────────────────
+    // 2. FORM GÖNDERİMİ
+    // ──────────────────────────────────────────────
+    cvFormu.addEventListener("submit", function(e) {
+
+      // Sayfanın yenilenmesini engelle
+      e.preventDefault();
+
+
+      // ──────────────────────────────────────────
+      // 3. DOĞRULAMA
+      // ──────────────────────────────────────────
+      if (adSoyad.value.trim() === "") {
+        alert("Ad Soyad alanı boş bırakılamaz!");
+        adSoyad.focus();
+        return;
+      }
+
+      if (email.value.trim() === "") {
+        alert("E-posta alanı boş bırakılamaz!");
+        email.focus();
+        return;
+      }
+
+      if (okul.value.trim() === "") {
+        alert("Okul alanı boş bırakılamaz!");
+        okul.focus();
+        return;
+      }
+
+
+      // ──────────────────────────────────────────
+      // 4. CV OLUŞTURMA (DOM ile)
+      // ──────────────────────────────────────────
+
+      // Önce eski içeriği temizle (tekrar gönderilirse üst üste binmesin)
+      cvCikti.innerHTML = "";
+
+
+      // ── Profil Resmi ──
+      if (profilResmi.value.trim() !== "") {
+        var img = document.createElement("img");
+        img.setAttribute("src", profilResmi.value.trim());
+        img.setAttribute("alt", adSoyad.value.trim() + " profil fotoğrafı");
+        cvCikti.appendChild(img);
+      }
+
+
+      // ── Ad Soyad ──
+      var baslik = document.createElement("h2");
+      baslik.textContent = adSoyad.value.trim();
+      cvCikti.appendChild(baslik);
+
+
+      // ── Ayırıcı Çizgi ──
+      var cizgi1 = document.createElement("hr");
+      cvCikti.appendChild(cizgi1);
+
+
+      // ── E-posta ──
+      var emailP = document.createElement("p");
+      emailP.textContent = "📧 " + email.value.trim();
+      cvCikti.appendChild(emailP);
+
+
+      // ── Telefon ──
+      if (telefon.value.trim() !== "") {
+        var telP = document.createElement("p");
+        telP.textContent = "📱 " + telefon.value.trim();
+        cvCikti.appendChild(telP);
+      }
+
+
+      // ── Okul ──
+      var okulP = document.createElement("p");
+      okulP.textContent = "🏫 " + okul.value.trim();
+      cvCikti.appendChild(okulP);
+
+
+      // ── Bölüm ──
+      if (bolum.value.trim() !== "") {
+        var bolumP = document.createElement("p");
+        bolumP.textContent = "📚 " + bolum.value.trim();
+        cvCikti.appendChild(bolumP);
+      }
+
+
+      // ── Başarılar ──
+      if (basarilar.value.trim() !== "") {
+
+        var cizgi2 = document.createElement("hr");
+        cvCikti.appendChild(cizgi2);
+
+        var basariBaslik = document.createElement("h3");
+        basariBaslik.textContent = "Başarılar";
+        cvCikti.appendChild(basariBaslik);
+
+        var ul = document.createElement("ul");
+
+        // Her satırı ayrı bir liste elemanı yap
+        var satirlar = basarilar.value.trim().split("\n");
+
+        for (var i = 0; i < satirlar.length; i++) {
+          var satir = satirlar[i].trim();
+
+          // Boş satırları atla
+          if (satir !== "") {
+            var li = document.createElement("li");
+            li.textContent = satir;
+            ul.appendChild(li);
+          }
+        }
+
+        cvCikti.appendChild(ul);
+      }
+
+
+      // ──────────────────────────────────────────
+      // 5. STİL UYGULAMA
+      // ──────────────────────────────────────────
+      cvCikti.style.color           = yaziRenk.value;
+      cvCikti.style.backgroundColor = arkaplanRenk.value;
+      cvCikti.style.fontFamily      = yaziTipi.value;
+      cvCikti.style.borderColor     = yaziRenk.value;
+
+
+      // ──────────────────────────────────────────
+      // 6. GÖRÜNÜRLÜK — CV alanını göster
+      // ──────────────────────────────────────────
+      cvCikti.style.display = "block";
+
+    });
+
+
+    // ──────────────────────────────────────────────
+    // 7. TEMİZLE BUTONU
+    // ──────────────────────────────────────────────
+    temizleBtn.addEventListener("click", function() {
+
+      // Formu sıfırla
+      cvFormu.reset();
+
+      // CV çıktısını temizle ve gizle
+      cvCikti.innerHTML = "";
+      cvCikti.style.display = "none";
+    });
+
+  </script>
+</body>
+</html>
