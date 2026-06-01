@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="tr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mini CV Kartı — Pratik</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+</head>
+
+<body>
+    <br>
+    <h1 class="text-center text-info">MİNİ CV KARTI OLUŞTUR</h1>
+    <p class="text-center text-muted">Formu doldurun, "Oluştur" butonuyla kartı güncelleyin, "Ekle" ile çoğaltın.</p>
+    <div class="container mt-3">
+        <div class="row">
+
+            <!-- ══════════════ SOL TARAF — FORM ══════════════ -->
+            <div class="col-5 border border-info rounded p-4">
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Ad Soyad</label>
+                    <input type="text" class="form-control" id="isim" value="Ahmet Yılmaz">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Ünvan</label>
+                    <input type="text" class="form-control" id="unvan" value="Web Geliştirici">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Fotoğraf</label>
+                    <select class="form-select" size="4" id="fotoListe">
+                        <option value="https://i.pravatar.cc/150?img=11" selected>Fotoğraf 1</option>
+                        <option value="https://i.pravatar.cc/150?img=12">Fotoğraf 2</option>
+                        <option value="https://i.pravatar.cc/150?img=33">Fotoğraf 3</option>
+                        <option value="https://i.pravatar.cc/150?img=53">Fotoğraf 4</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Deneyim (Yıl)</label>
+                    <input type="number" class="form-control" id="deneyim" value="0">
+                </div>
+
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <label class="form-label fw-bold mb-0">Çalışıyor mu?</label>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="durumSwitch">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Kart Rengi</label>
+                    <div class="btn-group w-100" role="group">
+                        <input type="radio" class="btn-check" name="kartRenk" id="renkLacivert" checked>
+                        <label class="btn btn-outline-primary" for="renkLacivert">Lacivert</label>
+
+                        <input type="radio" class="btn-check" name="kartRenk" id="renkBordo">
+                        <label class="btn btn-outline-danger" for="renkBordo">Bordo</label>
+
+                        <input type="radio" class="btn-check" name="kartRenk" id="renkYesil">
+                        <label class="btn btn-outline-success" for="renkYesil">Yeşil</label>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Hakkında</label>
+                    <textarea class="form-control" id="hakkinda" rows="3">Yazılım alanında kendini geliştiren, takım çalışmasına yatkın bir profesyonel.</textarea>
+                </div>
+
+                <button type="button" class="btn btn-info text-white w-100 mb-3" id="olusturBtn">Oluştur</button>
+
+                <div class="d-flex align-items-center gap-2">
+                    <span class="fw-bold">Kopya:</span>
+                    <button type="button" class="btn btn-outline-info btn-sm" id="eksiBtn">−</button>
+                    <input type="text" class="form-control form-control-sm text-center" style="width:45px" value="1" id="kopyaSayisi">
+                    <button type="button" class="btn btn-outline-info btn-sm" id="artiBtn">+</button>
+                    <button type="button" class="btn btn-info btn-sm text-white" id="ekleBtn">Ekle</button>
+                </div>
+
+            </div>
+
+            <!-- ══════════════ SAĞ TARAF — KART ÖNİZLEME ══════════════ -->
+            <div class="col-7 d-flex align-items-center justify-content-center" id="onizlemeAlani">
+                <div class="card shadow" style="width: 300px;" id="kartCerceve">
+
+                    <!-- Üst renkli bant -->
+                    <div id="kartBant" style="height:8px; background-color: Navy;"></div>
+
+                    <div class="card-body text-center">
+                        <img src="https://i.pravatar.cc/150?img=11"
+                             class="rounded-circle border border-3 mb-2"
+                             style="width:90px; height:90px; object-fit:cover;"
+                             alt="CV Fotoğrafı" id="kartFoto">
+                        <h5 class="mb-0" id="kartIsim">Ahmet Yılmaz</h5>
+                        <small class="text-muted" id="kartUnvan">Web Geliştirici</small>
+                        <hr>
+                        <p class="card-text small" id="kartHakkinda">Yazılım alanında kendini geliştiren, takım çalışmasına yatkın bir profesyonel.</p>
+                        <p class="card-text"><strong>Deneyim:</strong> <span id="kartDeneyim">0</span> yıl</p>
+                        <span class="badge bg-secondary" id="kartDurum">Çalışmıyor</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <br>
+
+    <!-- ══════════════ ALT ALAN — KOPYALANAN KARTLAR ══════════════ -->
+    <div class="container border border-info rounded d-flex flex-wrap justify-content-center gap-3 p-3" id="kopyaAlani">
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
+
+    <script>
+    /*
+    ╔══════════════════════════════════════════════════════════════════╗
+    ║                         GÖREVLER                               ║
+    ╠══════════════════════════════════════════════════════════════════╣
+    ║                                                                ║
+    ║  1. ELEMAN SEÇİMİ                                             ║
+    ║     Aşağıdaki elemanları querySelector ile seçin:              ║
+    ║                                                                ║
+    ║     Form:  #isim, #unvan, #fotoListe, #deneyim,               ║
+    ║            #durumSwitch, #hakkinda                              ║
+    ║     Kart:  #kartCerceve, #kartBant, #kartFoto, #kartIsim,      ║
+    ║            #kartUnvan, #kartHakkinda, #kartDeneyim, #kartDurum ║
+    ║     Kontrol: #olusturBtn, #eksiBtn, #artiBtn,                 ║
+    ║              #ekleBtn, #kopyaSayisi                            ║
+    ║     Alan:  #onizlemeAlani, #kopyaAlani                         ║
+    ║     Radio: #renkLacivert, #renkBordo, #renkYesil               ║
+    ║                                                                ║
+    ║  2. OLUŞTUR BUTONU (addEventListener ile)                      ║
+    ║     "Oluştur" butonuna tıklanınca:                             ║
+    ║                                                                ║
+    ║     a) #isim değerini → #kartIsim'e yaz (textContent)          ║
+    ║     b) #unvan değerini → #kartUnvan'a yaz                     ║
+    ║     c) #fotoListe seçili değeri → #kartFoto'nun src'si         ║
+    ║        (setAttribute kullanın)                                 ║
+    ║     d) #hakkinda değerini → #kartHakkinda'ya yaz               ║
+    ║     e) #deneyim değerini → #kartDeneyim'e yaz                  ║
+    ║     f) Çalışma durumu:                                         ║
+    ║        #durumSwitch işaretliyse → #kartDurum yazısı            ║
+    ║        "Çalışıyor", sınıfı "badge bg-success" olsun           ║
+    ║        İşaretli değilse → yazısı "Çalışmıyor",                ║
+    ║        sınıfı "badge bg-secondary" olsun                      ║
+    ║        (className ile değiştirin)                               ║
+    ║     g) Kart rengi: Hangi radio işaretliyse (.checked)          ║
+    ║        if / else if ile kontrol edin:                          ║
+    ║                                                                ║
+    ║        Lacivert → bant: Navy,    isim: Navy,  hakkında: Gray   ║
+    ║        Bordo    → bant: #8B0000, isim: #8B0000, hak.: #CD5C5C ║
+    ║        Yeşil    → bant: #2E7D32, isim: #2E7D32, hak.: #66BB6A ║
+    ║                                                                ║
+    ║        Bant rengi: #kartBant.style.backgroundColor             ║
+    ║        İsim rengi: #kartIsim.style.color                       ║
+    ║        Hakkında rengi: #kartHakkinda.style.color               ║
+    ║                                                                ║
+    ║  3. KOPYA SAYISI ARTIR / AZALT                                 ║
+    ║     + basınca 1 artsın (en fazla 5)                            ║
+    ║     − basınca 1 azalsın (en az 1)                              ║
+    ║     Number() ile dönüşüm yapın.                                ║
+    ║                                                                ║
+    ║  4. EKLE BUTONU                                                ║
+    ║     #onizlemeAlani'nın innerHTML'ini kopya sayısı kadar        ║
+    ║     #kopyaAlani'na ekleyin (innerHTML += ile).                 ║
+    ║                                                                ║
+    ╚══════════════════════════════════════════════════════════════════╝
+    */
+
+    // Kodunuzu buraya yazın...
+
+    </script>
+</body>
+</html>
